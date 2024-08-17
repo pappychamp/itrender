@@ -1,0 +1,9 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/pappychamp/trender_backend.git
+[submodule "batch"]
+	path = batch
+	url = https://github.com/pappychamp/trender_batch.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/pappychamp/trender_frontend.git
