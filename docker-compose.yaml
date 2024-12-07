@@ -12,8 +12,6 @@ services:
     volumes:
       - ./frontend:/workspace:cached
       - node_modules:/workspace/node_modules
-    networks:
-      - itrender-network
   backend:
     build:
       context: ./backend
@@ -24,6 +22,7 @@ services:
     volumes:
       - ./backend/src:/workspace/src
       - ./backend/tests:/workspace/tests
+      - ./firebase-adminsdk.json:/workspace/firebase-adminsdk.json
     ports:
       - 8080:8080
     environment:
@@ -32,10 +31,9 @@ services:
       - POSTGRES_DB=db-container
       - HOST_NAME=db
       - PORT_NUMBER=5432
+      - GOOGLE_APPLICATION_CREDENTIALS=/workspace/firebase-adminsdk.json
     depends_on:
       - db
-    networks:
-      - itrender-network
   batch:
     build:
       context: ./batch
@@ -51,8 +49,6 @@ services:
       - batch/env/dev.env
     depends_on:
       - db
-    networks:
-      - itrender-network
   db:
     image: postgres:16.3
     tty: true
@@ -64,13 +60,9 @@ services:
       - 5432:5432
     volumes: # 名前付きボリュームの割り当て定義を追加
       - db-data:/var/lib/postgresql/data
-    networks:
-      - itrender-network
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 volumes:
   node_modules:
   db-data:
     driver: local
     # external: true
-networks:
-  itrender-network:
-    external: true
